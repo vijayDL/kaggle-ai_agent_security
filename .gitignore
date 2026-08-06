@@ -1,0 +1,50 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Competition-provided packages (large; NOT our code — re-provided by Kaggle at
+#     runtime, and redistributing them here is unnecessary/undesirable) ---
+/aicomp_sdk/
+/aicomp_sdk-3.1.2.dist-info/
+/kaggle_evaluation/
+
+# --- Local run artifacts / logs / scratch ---
+*.log
+/outputs/
+scratchpad/
+artifacts/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# --- Downloaded reference / competitor notebooks (public Kaggle notebooks — not our
+#     work; kept locally for analysis only). Delete these lines to commit them. ---
+/ai-agent-security-012130.ipynb
+/ai-agent-security-v15.ipynb
+/ai-agent-security-v20.ipynb
+/ai-agent-security-attack-algorithm-hitherto.ipynb
+/ai-security-urad-code.ipynb
+/ai-agent-working-note.ipynb
+/jed-v25.ipynb
+/getting-started-notebook.ipynb
+/aas-local-validation.ipynb
+
+# --- Large model files (never commit weights) ---
+*.gguf
+*.safetensors
+*.bin
+*.pt
