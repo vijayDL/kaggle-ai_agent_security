@@ -11,6 +11,9 @@ __pycache__/
 venv/
 env/
 ENV/
+# ...but NOT the vendored SDK's core/env package (ground-truth source, not a venv)
+!vendor/aicomp_sdk-3.1.2/aicomp_sdk/core/env/
+!vendor/aicomp_sdk-3.1.2/aicomp_sdk/core/env/**
 
 # --- Competition-provided packages (large; NOT our code — re-provided by Kaggle at
 #     runtime, and redistributing them here is unnecessary/undesirable) ---
