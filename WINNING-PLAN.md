@@ -1,3 +1,7 @@
+> **ARCHIVED 2026-08-09.** Superseded by `STATE.md` after a git reset invalidated the local work
+> this doc was tracking (its P1M/multipost/portfolio claims are unvalidated, not disproven — see
+> `STATE.md`). Kept for the guardrail-hole reasoning, which may still be useful background.
+
 # Winning Plan — AI Agent Security: Multi-Step Tool Attacks
 
 **Reviewed & verified against the local `aicomp_sdk` source, 1 August 2026.**

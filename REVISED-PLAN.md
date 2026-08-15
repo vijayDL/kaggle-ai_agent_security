@@ -1,3 +1,7 @@
+> **ARCHIVED 2026-08-09.** Superseded by `STATE.md` after a git reset invalidated the local work
+> this doc was tracking (its P1M/multipost/portfolio claims are unvalidated, not disproven — see
+> `STATE.md`). Kept for the independent-guardrail-hypothesis reasoning (§2), which still holds.
+
 # Revised Plan v2 — AI Agent Security: Multi-Step Tool Attacks
 
 **Living tracking doc. Last updated: 2026-08-03.** Rewritten after a review that corrected
