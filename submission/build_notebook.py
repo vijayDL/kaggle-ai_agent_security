@@ -39,6 +39,17 @@ VARIANTS: dict[str, tuple[list[str], str]] = {
         [P1],
         "100% P1 SECRET_MARKER — diagnostic to measure our fill's public ceiling vs the 90-notebook.",
     ),
+    "vprobe_diag200": (
+        ["P1"],
+        "PROBE: 200 blind-emit single-post P1 with the DIAGNOSTIC intent-evasion prompt "
+        "(marker + exfil intent hidden). Fast run. Confirms it fires on the real grader "
+        "(~norm 49 = works) -> ready as a stronger private-bet full run. Costs 1 slot.",
+    ),
+    "vprobe_fwd200": (
+        ["P1"],
+        "PROBE: 200 blind-emit single-post P1 with the FORWARD intent-evasion prompt. Fast. "
+        "Confirms real-grader firing of the second evasion style. Costs 1 slot.",
+    ),
     "vprobe_p1m20": (
         ["P1M"],
         "DIAGNOSTIC PROBE: blind-emits only 20 P1M candidates (skips live fill), so the "
@@ -167,6 +178,8 @@ def _code_cell(src: str) -> dict:
 _PROBE_N_FOR: dict[str, int] = {
     "vprobe_p1m20": 20,
     "vprobe_p1m200": 200,
+    "vprobe_diag200": 200,
+    "vprobe_fwd200": 200,
 }
 
 # Per-variant engine-constant overrides (substituted into attack.py). Lets a variant
@@ -175,6 +188,10 @@ _ENGINE_OVERRIDE: dict[str, dict[str, object]] = {
     # Slot 1 (SAFE insurance): multi-turn WITH the OK wrap-up + baseline sizing. The
     # fully-validated version (fill test showed it completes + gains); clean multi-turn read.
     "v10_multiturn": {"_P1M_MULTITURN": 1, "_P1_MULTIPOST_N": 6},
+    # Fast blind-emit probes of the intent-evasion prompts (marker + intent hidden),
+    # to confirm they FIRE on the real grader before committing a full private-bet run.
+    "vprobe_diag200": {"_P1_STYLE": "diagnostic"},
+    "vprobe_fwd200": {"_P1_STYLE": "forward"},
     # Slot 2: multi-turn + no_OK (drop the wrap-up: +116% gemma / +276% gpt_oss local),
     # baseline sizing. Isolates the no_OK lever's real-board value vs v10.
     "v12_multiturn_nook": {"_P1M_MULTITURN": 1, "_P1_MULTIPOST_N": 6, "_P1M_MT_DROP_OK": 1},
@@ -215,7 +232,7 @@ def _attack_src_for(plan: list[str], label: str) -> str:
         if m != 1:
             raise SystemExit("could not find the single-line `_PROBE_N = ...` to substitute")
     for const, val in _ENGINE_OVERRIDE.get(label, {}).items():
-        text, m = re.subn(rf"^{re.escape(const)} = .*$", f"{const} = {val}  # variant: {label}",
+        text, m = re.subn(rf"^{re.escape(const)} = .*$", f"{const} = {val!r}  # variant: {label}",
                           text, count=1, flags=re.MULTILINE)
         if m != 1:
             raise SystemExit(f"could not substitute engine override `{const}` for {label}")
