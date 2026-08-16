@@ -51,3 +51,4 @@ Thumbs.db
 *.safetensors
 *.bin
 *.pt
+/competitionscratch/
