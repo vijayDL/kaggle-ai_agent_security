@@ -739,6 +739,27 @@ always `_forge_plan_msg`, SLOW_MULTIPOST_N=3 to stay under the 8-hop budget). En
 ceiling lever is real, next batch does the N-sweep. If flat/worse -> local 2.8x was the artifact, multipost
 definitively closed, pivot to external intel (newest high-vote public kernels + forum for the 100+ mechanism).
 
+### RESULTS (2026-08-16) — multipost DEFINITIVELY CLOSED
+| Kernel | Public score | vs v17-edge control (88.065) |
+|---|---:|---|
+| `v17-edge` (control) | 88.065 | baseline |
+| **`forcemp3`** (forced multipost N=3) | **80.605** | **-7.46 (-8.5%)** |
+| `p2-realsecret-blindemit` | 24.795 | (private, ~prior 24.750) |
+| `p3-deputy-blindemit` | 23.430 | (private, ~prior 23.385) |
+| `p6-injection` | 0.135 | (private, ~prior 0.030) |
+
+`[MEAS]` forcemp3 (verified 3.00 posts/candidate) scored **-8.5%**, far outside the ~4.4% noise floor.
+**Multipost is a real REGRESSION on the board, not neutral** — on the real T4 each post costs a full
+generation (~3x/candidate), so fewer candidates fit the fixed replay budget and the extra raw doesn't pay
+for it. The local 2.8x raw/sec was EXACTLY the cheap-forge-hop artifact predicted (local hops ~0.08s, real
+hops full-cost). **Confirms local's multipost blind spot with a real number** (local +180%, board -8.5%) --
+validates board-testing over trusting local. Multipost is now cleanly, definitively closed.
+
+**Every public lever we can locally test is now exhausted: generation speed (maxed), stacking
+(replay-negative), cell bonus (earned), multipost (-8.5%). ~88-90 is our primitive's true ceiling.**
+The 35 teams above 100 (top 137) use a mechanism NOT in any notebook we've read. NEXT: external intel only
+-- pull newest high-vote public kernels + forum for the 100+ mechanism. No more local per-candidate tuning.
+
 ### GOTCHA: kaggle CLI 1.7.4.5 cannot set GPU type
 The CLI only reads `enable_gpu` (bool) — `machine_shape` in kernel-metadata.json is a NO-OP. New GPU
 kernels (and any CLI re-push, even to an existing T4 kernel) default to **P100**, which the competition
