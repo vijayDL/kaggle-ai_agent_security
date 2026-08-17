@@ -20,6 +20,18 @@ VERSIONS = HERE / "versions"
 
 # label -> (source .py, one-line description for the print banner)
 VARIANTS: dict[str, tuple[str, str]] = {
+    "v19-forge-commit": (
+        "attack_v19_forge_commit.py",
+        "PUBLIC bet: first-person commitment inside slow-row forge (untested refinement of the dominant lever)",
+    ),
+    "v19-forge-commit-exact": (
+        "attack_v19_forge_commit_exact.py",
+        "PUBLIC bet: same as forge-commit but exact proven multipost phrasing, isolates wording",
+    ),
+    "v19-gemma-commit": (
+        "attack_v19_gemma_commit.py",
+        "PUBLIC bet: plain-text commitment on gemma/fast row, reliability not speed hypothesis",
+    ),
     "v18-multipost-n4": (
         "attack_v18_multipost_n4.py",
         "PUBLIC bet: gpt_oss Harmony-forge multipost N=4 (isolated), base=v17-edge 88.920",
