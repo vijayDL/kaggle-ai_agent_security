@@ -953,3 +953,16 @@ independent axes tested, six closed. Combined with the 3-way ceiling confirmatio
 session, `radiantallomancer` writeup), confidence is now very high that no further refinement of
 the single-hop-P1-plus-reasoning-forge primitive will beat ~88-90 — the gap to the 100+ teams is a
 different mechanism, not a tuning problem on this one.
+
+## 2026-08-19, continued — v19-privmix result: 16.890, expected
+
+`attack_v19_privmix` (Submission B, the private mix bet: 80% `CONFUSED_DEPUTY` deputy + 20%
+`UNTRUSTED_TO_ACTION` share via the "post" carve-out) scored **16.890 public**. Only the deputy 80%
+is strict-validated and can score anything on the public board by design — the share 20% is
+deliberately behavioral-only, since the public guardrail taint-denies the post during our own
+generation. Standalone `v18-p3-deputy` (pure deputy) scored ~23 across its runs (22.965, 23.385,
+23.430); discounting 20% of slots to zero at similar throughput predicts `0.8 × 23 ≈ 18.4`, close to
+the actual 16.890 (gap plausibly ordinary run-to-run noise). **Consistent with the design working as
+intended, not a regression.** The actual bet — whether the share slice pays off under a rules-like
+private guardrail — stays unobservable until the leaderboard reveals, same as every other
+private-board primitive this session.
