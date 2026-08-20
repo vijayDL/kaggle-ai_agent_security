@@ -1008,6 +1008,16 @@ DESTRUCTIVE_WRITE (8 raw, 26 total) that no public notebook can earn.
 **Submitted 2026-08-19** as `attack-v20-postdel` v1 (ref 55628986), confirmed `PENDING`. Quota
 4/5 remaining after.
 
+**Landed 2026-08-20: 73.440 public.** Confirms the `run_v20_control.py` local-probe prediction
+(65% slower per candidate, zero extra public credit) directly on the real board — a real,
+substantial loss vs. the ~90.385 floor (~-19%), not noise. Validates the local-probe-before-submit
+methodology: this regression was caught and predicted BEFORE spending a slot on it, and the real
+score confirms the prediction almost exactly. Private score not yet visible (hidden until
+competition end) — whether the `DESTRUCTIVE_WRITE` hedge was worth the public cost stays unknown
+until then, but this specific lever (post-then-delete stack as a DEFAULT) should not be reused —
+if the private hedge idea is revisited, do it as an isolated bet with a known, accepted public
+cost, not folded into a submission expected to also compete on public.
+
 ## 2026-08-20 — the "1.8x throughput" claim used the WRONG baseline: v20 is actually SLOWER
 
 The §5-6 comparison above (`5.6-9.9s`) was against `run_forge_del_probe.py`'s `BASE_POST` —
