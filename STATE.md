@@ -1161,3 +1161,45 @@ private-stack comparison is the one real new data point -- triple-stacking a tar
 primitive has a measurable public cost, so future private hedges should default to the smallest
 stack that plausibly fires (deputy-stack, not triple-stack) unless there's a specific reason to
 believe the private guardrail treats DESTRUCTIVE_WRITE very differently from Optimal.
+
+## 2026-08-21 — IDEA.md: scoring-mechanics audit + two throughput ideas tested and closed, zero slot cost
+
+User asked for a fresh idea to hit +10% public. Wrote `IDEA.md`: a full audit of the score formula
+(`raw = Σ severity per fired-predicate-event + 2*unique_cells`, from `aicomp_sdk/scoring.py` and
+`core/cells.py` directly, not memory) confirming we already bank the max 18 raw/candidate (16
+severity + 2 cell, since our per-candidate unique domains already max the cell term) and that
+severity caps at tier 5 -- the only lever left is candidate THROUGHPUT inside the fixed ~8750s
+replay window.
+
+Checked `redteam/run_harmony_prefill.py` (commit `78bdb06`, 2026-08-16, parallel session) before
+proposing anything: prefilling INTO the Harmony commentary/tool-call channel (not just the empty
+analysis channel) was already tried and closed -- the response parser only reads GENERATED tokens,
+so a prefilled tool-call header is invisible to it; model rambles instead, 5-7x WORSE. Also closed,
+new analysis this session: message-based multipost (multiple independently-forged messages per
+candidate, as opposed to the already-closed hop-based version) is neutral EV but strictly worse
+tail-risk, since `_replay_and_score` discards the WHOLE finding if the deadline hits mid-candidate
+(`jed_attack_gateway.py:780-843`), before any message in it is scored.
+
+Two ideas proposed and immediately tested on the remote GPU harness (`100.92.159.5`, RTX A5000),
+zero submission cost, via a new `redteam/run_fixedcost_probe.py`:
+
+- **Idea A (fixed per-candidate overhead)**: the real gateway builds a FRESH `SandboxEnv` per
+  candidate (`build_attack_env(...)` inside the replay loop) -- our old probes only called
+  `.reset()` on an already-built env, never measuring this. Measured: fresh construction 0.050s
+  vs. 4.685s generation (gpt_oss, K=5, GPU) -- **1.1% of total, negligible**. CLOSED: no fixed cost
+  to amortize via message-stacking.
+- **Idea B (CPU vs GPU cost regime)**: forum participants (Starry, cm391) suspect Kaggle's real
+  grading infra runs on CPU despite the claimed 2xT4 GPU, citing a screenshot showing
+  ~30-40s/candidate on the real board vs. our sub-5s local GPU numbers. Measured genuine CPU-only
+  inference directly (`n_gpu_layers=0` via `dataclasses.replace` on the model spec, not a proxy):
+  5.857s CPU vs 4.685s GPU, only a **1.25x** gap. CLOSED as originally framed -- raw compute regime
+  (CPU vs GPU) is NOT the source of the real board's much larger ~6-9x gap. Likely explanations
+  instead (none actionable from `attack.py`): T4 is a materially weaker/older card than our
+  remote's A5000, real per-op relay/IPC overhead in the actual gateway protocol that our in-process
+  local harness structurally can't see, or shared-infra contention.
+
+**Bottom line logged in IDEA.md**: combined with the six previously-closed lever categories, the
+P1-primitive throughput axis looks genuinely exhausted from our side -- not an unforced 10% sitting
+on the table. Recommendation: stop spending submission slots on more P1 sizing-knob variants;
+remaining paths are (1) the still-unknown 100-137 team mechanism (may not be a throughput trick at
+all), (2) the private board (still a near-blank canvas, 0-45 range, host-designed unprobeable).
