@@ -1124,3 +1124,40 @@ reserve today.
 
 **Established cadence going forward** (per user instruction): 2 public-hunting + 3 private-hunting
 submissions per day, each testing something genuinely new -- not a rehash of a closed axis.
+
+## 2026-08-20, continued — current submission status
+
+Quota: 48/50 total used, 4/5 used today, 1 remaining today.
+
+| Submitted | Date (UTC) | Score | Status |
+|---|---|---:|---|
+| `v17-edge` v2 (same-day control) | 2026-08-20 06:28 | — | PENDING |
+| `v21-tightmargin` v1 (REPLAY_SAFE_FRAC 0.995) | 2026-08-20 06:28 | — | PENDING |
+| `v21-deputy-stack` v1 (post+mail forge) | 2026-08-20 06:28 | — | PENDING |
+| `v21-triple-stack` v1 (post+mail+delete forge) | 2026-08-20 06:28 | — | PENDING |
+| `v20-postdel` v1 (post+delete, slow row) | 2026-08-19 17:41 | 73.440 | COMPLETE |
+
+**Key reads when the 4 PENDING land:**
+- `v17-edge` v2 vs 90.385 floor: confirms whether the post-rerun eval is stable for our exact code.
+- `v21-tightmargin` vs `v17-edge` v2: isolates the REPLAY_SAFE_FRAC 0.99→0.995 one-knob change.
+- `v21-deputy-stack` vs `v17-edge` v2: does the mail step survive the forge-commit on the slow row?
+  (Local probe: 4/4 post + 4/4 mail, but local mail latency may not transfer to T4.)
+- `v21-triple-stack` vs `v21-deputy-stack`: does adding the (target-blocked) delete at the end
+  cost the mail step? (Local probe: delete 0/6 as expected, mail still 4/4.)
+
+**Current best public score: 90.385** (v18-multipost-n6, rescored post-rerun). Rank ~247/~3757.
+
+## 2026-08-21 — yesterday's 4-submission batch landed
+
+| Kernel | Score | Read |
+|---|---:|---|
+| `v17-edge` v2 (same-day control) | 86.580 | vs the 90.385 "floor" (a rescored OLD submission), same code scores **-4.2%** same-day. Confirms that number was never a stable floor for fresh runs -- it's one high draw from the known ~87.8-89.9 spread, now extended down to 86.580. Treat 90.385 as a historical best, not a reproducible baseline. |
+| `v21-tightmargin` (REPLAY_SAFE_FRAC 0.995) | 86.985 | +0.405 vs same-day control (~+0.5%) -- inside normal run-to-run spread, not a real signal either way. One-knob change closed as noise, not worth re-testing without a larger delta. |
+| `v21-deputy-stack` (post+mail forge, EXFIL+DEPUTY) | 44.550 | Stacking DEPUTY into the same candidate as EXFIL costs roughly half the public credit of pure P1, as expected -- this is a private-hedge bet, not a public-competing one. |
+| `v21-triple-stack` (post+mail+delete forge) | 41.415 | -3.135 vs deputy-stack (~-7%) from adding the delete step, even though delete is correctly target-blocked under Optimal (confirmed by local probe before submit) and doesn't touch the mail step's firing. The blocked delete still costs public credit -- likely by consuming candidate-generation time/slots on a step that never contributes to the fired set, shrinking the pool of firing post+mail candidates found within budget. **Read for private hedging: deputy-stack is the better bet than triple-stack** -- adding a third stacked primitive that's known dead on the public guardrail has a real public cost and no observed public upside; only take that cost if the private DESTRUCTIVE_WRITE credit is judged worth more than ~3 public points, which we can't verify until the private board reveals. |
+
+Net: no public-side gain found in this batch (control variance explains tightmargin's delta); the
+private-stack comparison is the one real new data point -- triple-stacking a target-blocked
+primitive has a measurable public cost, so future private hedges should default to the smallest
+stack that plausibly fires (deputy-stack, not triple-stack) unless there's a specific reason to
+believe the private guardrail treats DESTRUCTIVE_WRITE very differently from Optimal.
