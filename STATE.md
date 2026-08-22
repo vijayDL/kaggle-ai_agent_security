@@ -1244,3 +1244,20 @@ Idea B priority list) was still running on the remote box after its launching to
 rejected -- the SSH command had already reached the remote before the rejection registered locally.
 Stopped it (`docker stop`) once noticed; it was not resumed, since the user's follow-up instruction
 was to prioritize submitting over further investigation.
+
+## 2026-08-22 — v22 batch landed
+
+| Kernel | Score | Read |
+|---|---:|---|
+| `v22-storewrite` | 0.000 | Exactly as designed -- guaranteed 0 on public (behavioral-only, Optimal blocks fs.write during generation). No signal expected or received on public; private-only bet, unmeasurable until reveal. |
+| `v22-pureshare` | 0.000 | Same -- guaranteed near-0 on public by design (Optimal taint-blocks the post). Confirms the 80/20 privmix's 16.890 wasn't secretly leaking public credit from the share slice; that number really was ~all deputy. |
+| `v22-deleteonly` | 0.000 | Same -- guaranteed 0 on public (Optimal blocks fs.delete(secret.txt) unconditionally, per the 2026-08-19 probe). Clean, undiluted private-only data point now banked; whether it's worth anything stays unknown until the private reveal. |
+| `v22-twomsg` | 78.370 | **CLOSED, confirmed negative on the real board.** Well below the entire known single-message baseline spread (85.7-90.4) -- a real, substantial loss (~9-13%), not noise. Matches the theoretical prediction from IDEA.md (cell-signature dilution: 2 posts in 1 finding bank 1 cell instead of 2 -> 34 raw instead of 36 for the same work, PLUS all-or-nothing timeout risk if the deadline lands between message 1 and 2) even though the *local* GPU probe's fixed-overhead-amortization hypothesis wasn't supported either. Message-stacking is now closed by BOTH local reasoning and a real submission -- don't revisit without a genuinely new angle. |
+| `v22-margin999` | 85.725 | A new LOW, below the entire prior spread floor (86.580). Leans negative for REPLAY_SAFE_FRAC=0.999 vs the known-safe 0.99-0.995 range, though n=1 can't fully separate this from the day's own noise band. Read: don't push REPLAY_SAFE_FRAC past ~0.995 -- the cushion at 0.999 (~9s) may be tight enough to start clipping value, consistent with the margin's own risk model (a wall_deadline overrun is asymmetric: small upside per extra candidate, whole-row-zero downside). Sizing-knob tuning on this axis looks fully exhausted now, matching IDEA.md's 2026-08-21 conclusion -- three data points (0.99 baseline, 0.995 flat, 0.999 down) with no rung showing a clear win. |
+
+Net: all 3 private bets behaved exactly as designed on public (0, no surprises either direction) --
+the only thing still unknown is the private board itself. Both public bets came back negative,
+closing two more items: message-stacking is dead by real-board evidence now, not just local
+reasoning, and REPLAY_SAFE_FRAC sizing looks tapped out across its full tested range. The P1
+single-message chassis at its proven settings (REPLAY_SAFE_FRAC~0.99-0.995, single-hop, Harmony
+forge, no stacking) remains the ceiling on public; nothing tried since 2026-08-17 has beaten it.
